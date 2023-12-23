@@ -1,0 +1,31 @@
+*Backup file at CF1 to CF2
+
+*Upload new TiMOS via NFMP / copy via laptop to CF2
+
+*Copy TiMOS files from CF2 to CF1 and verify files
+file md cf1:\7210-SAS-Sx-MIBs/ 
+file md cf1:\7210-SAS-Sx-TiMOS-23.3.R2/ 
+file md cf1:\7210-SAS-Sx-YANG/ 
+file copy cf2:\7210-SAS-Sx-MIBs\*.* cf1:\7210-SAS-Sx-MIBs\ force
+file copy cf2:\7210-SAS-Sx-TiMOS-23.3.R2\*.*  cf1:\7210-SAS-Sx-TiMOS-23.3.R2\ force
+file copy cf2:\7210-SAS-Sx-YANG\*.* cf1:\7210-SAS-Sx-YANG\ force
+
+file copy cf2:/BOOT.TIM cf1: 
+
+file version check cf1:/7210-SAS-Sx-TiMOS-10.0.R12/BOTH.TIM 
+file version check cf1:/BOOT.TIM 
+
+*Configure BOF
+bof primary-image cf1:\7210-SAS-Sx-TiMOS-23.3.R2\ 
+bof secondary-image cf1:\7210-SAS-Sx-TiMOS-10.0.R12\ 
+bof primary-config cf1:\config.cfg 
+bof secondary-config cf2:\config.cfg 
+bof persist on 
+bof save 
+show bof
+
+file dir cf1:
+file dir cf2:
+
+*Running Upgrade TiMOS
+admin reboot upgrade
